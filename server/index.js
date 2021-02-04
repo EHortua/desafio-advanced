@@ -13,26 +13,47 @@ const db = mysql.createConnection({
 });
 
 app.post('/create', (req, res) => {
-    const name = req.body.name;
+    const firstname = req.body.firstname;
     const lastname = req.body.lastname;
     const gender = req.body.gender;
     const email = req.body.email;
-    const direction = req.body.direction;
-    const phone = req.body.phone;
+    const address = req.body.address;
+    const phonenumber = req.body.phonenumber;
     const documenttype = req.body.documenttype;
-    const document = req.body.document;
+    const documentnumber = req.body.documentnumber;
 
     db.query(
         "INSERT INTO employee (firstname, lastname, gender, email, phonenumber, address, documenttype, documentnumber) VALUES (?,?,?,?,?,?,?,?)",
-        [name, lastname, gender, email, direction, phone, documenttype, document], (err, result) => {
+        [firstname, lastname, gender, email, address, phonenumber, documenttype, documentnumber], (err, result) => {
             if (err) {
                 console.log(err)
             } else {
                 res.send("Values inserted");
             }
         }
-    )
-})
+    );
+});
+
+app.get('/employee', (req, res) => {
+    db.query("SELECT * FROM employee", (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }       
+    });
+});
+
+app.delete('/delete/:employeeid', (req, res) =>{
+    const employeeid = req.params.employeeid
+    db.query("DELETE FROM employee WHERE employeeid = ?", employeeid, (err, result) =>{
+        if(err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    })
+});
 
 app.listen(3030, () => {
     console.log('Server running on port 3030');
